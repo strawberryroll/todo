@@ -1,60 +1,59 @@
-import React, {useEffect, useState} from 'react';
-import CreateTask from '../modals/CreateTask'
+import React, { useEffect, useState } from 'react';
+import CreateTask from '../modals/CreateTask';
 import Card from './Card';
 
 const TodoList = () => {
     const [modal, setModal] = useState(false);
-    const [taskList, setTaskList] = useState([])
+    const [taskList, setTaskList] = useState([]);
     
     useEffect(() => {
-        let arr = localStorage.getItem("taskList")
+        let arr = localStorage.getItem("taskList");
        
         if(arr){
-            let obj = JSON.parse(arr)
-            setTaskList(obj)
+            let obj = JSON.parse(arr);
+            setTaskList(obj);
         }
-    }, [])
-
+    }, []);
 
     const deleteTask = (index) => {
-        let tempList = taskList
-        tempList.splice(index, 1)
-        localStorage.setItem("taskList", JSON.stringify(tempList))
-        setTaskList(tempList)
-        window.location.reload()
-    }
+        let tempList = taskList;
+        tempList.splice(index, 1);
+        localStorage.setItem("taskList", JSON.stringify(tempList));
+        setTaskList(tempList);
+        window.location.reload();
+    };
 
     const updateListArray = (obj, index) => {
-        let tempList = taskList
-        tempList[index] = obj
-        localStorage.setItem("taskList", JSON.stringify(tempList))
-        setTaskList(tempList)
-        window.location.reload()
-    }
+        let tempList = taskList;
+        tempList[index] = obj;
+        localStorage.setItem("taskList", JSON.stringify(tempList));
+        setTaskList(tempList);
+        window.location.reload();
+    };
 
     const toggle = () => {
         setModal(!modal);
-    }
+    };
 
     const saveTask = (taskObj) => {
-        let tempList = taskList
-        tempList.push(taskObj)
-        localStorage.setItem("taskList", JSON.stringify(tempList))
-        setTaskList(taskList)
-        setModal(false)
-    }
-
+        let tempList = taskList;
+        taskObj.Completed = false;  // Initialize the Completed property
+        tempList.push(taskObj);
+        localStorage.setItem("taskList", JSON.stringify(tempList));
+        setTaskList(tempList);
+        setModal(false);
+    };
 
     return (
         <>
-            <div className = "header text-center">
+            <div className="header text-center">
                 <h3>Todo List</h3>
-                <button className = "btn btn-primary mt-2" onClick = {() => setModal(true)} >Create Task</button>
+                <button className="btn btn-primary mt-2" onClick={() => setModal(true)}>Create Task</button>
             </div>
-            <div className = "task-container">
-            {taskList && taskList.map((obj , index) => <Card taskObj = {obj} index = {index} deleteTask = {deleteTask} updateListArray = {updateListArray}/> )}
+            <div className="task-container">
+                {taskList && taskList.map((obj, index) => <Card taskObj={obj} index={index} deleteTask={deleteTask} updateListArray={updateListArray} />)}
             </div>
-            <CreateTask toggle = {toggle} modal = {modal} save = {saveTask}/>
+            <CreateTask toggle={toggle} modal={modal} save={saveTask} />
         </>
     );
 };
