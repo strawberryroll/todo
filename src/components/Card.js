@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Box, Button, Card as MUICard, CardContent, CardActions, Typography } from '@mui/material';
 import EditTask from '../modals/EditTask';
 import CheckTask from '../modals/CheckTask';
 
@@ -41,23 +42,77 @@ const Card = ({ taskObj, index, deleteTask, updateListArray }) => {
     };
 
     return (
-        <div className="card-wrapper mr-5">
-            <div className="card-top" style={{ "backgroundColor": colors[index % 5].primaryColor }}></div>
-            <div className={`task-holder ${taskObj.Completed ? 'completed-task' : ''}`}>
-                <span className="card-header" style={{ "backgroundColor": colors[index % 5].secondaryColor, "borderRadius": "10px" }}>
+        <MUICard
+            sx={{
+                width: 270,
+                boxShadow: '0px 3px 50px rgba(0, 0, 0, 0.1)',
+                marginBottom: 4,
+                position: 'relative'
+            }}
+        >
+            <Box
+                sx={{
+                    height: 10,
+                    backgroundColor: colors[index % 5].primaryColor
+                }}
+            />
+            <CardContent
+                sx={{
+                    backgroundColor: taskObj.Completed ? '#F0F0F0' : '#FFFFFF',
+                    textDecoration: taskObj.Completed ? 'line-through' : 'none'
+                }}
+            >
+                <Typography
+                    variant="h5"
+                    component="div"
+                    sx={{
+                        backgroundColor: colors[index % 5].secondaryColor,
+                        borderRadius: 1,
+                        padding: 1,
+                        textAlign: 'center',
+                        fontWeight: 'bold',
+                        color: colors[index % 5].primaryColor
+                    }}
+                >
                     {taskObj.Name}
-                </span>
-                <p className="mt-3">{taskObj.Description}</p>
-                
+                </Typography>
+                <Typography variant="body2" color="text.secondary" sx={{ mt: 2 }}>
+                    {taskObj.Description}
+                </Typography>
+            </CardContent>
+            <CardActions
+                sx={{
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    padding: '16px'
+                }}
+            >
                 <CheckTask taskObj={taskObj} index={index} updateListArray={updateListArray} />
-                
-                <div style={{ "position": "absolute", "top": "160px", "left": "160px" }}>
-                    <button style={{ "color": colors[index % 5].primaryColor, "cursor": "pointer" }} onClick={() => setModal(true)}>Edit</button>
-                    <button style={{ "color": colors[index % 5].primaryColor, "cursor": "pointer" }} onClick={handleDelete}>Delete</button>
-                </div>
-            </div>
+                <Box>
+                    <Button
+                        size="small"
+                        sx={{
+                            color: colors[index % 5].primaryColor,
+                            cursor: 'pointer'
+                        }}
+                        onClick={() => setModal(true)}
+                    >
+                        Edit
+                    </Button>
+                    <Button
+                        size="small"
+                        sx={{
+                            color: colors[index % 5].primaryColor,
+                            cursor: 'pointer'
+                        }}
+                        onClick={handleDelete}
+                    >
+                        Delete
+                    </Button>
+                </Box>
+            </CardActions>
             <EditTask modal={modal} toggle={toggle} updateTask={updateTask} taskObj={taskObj} />
-        </div>
+        </MUICard>
     );
 };
 
