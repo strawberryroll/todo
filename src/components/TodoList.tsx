@@ -1,18 +1,16 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import AddTodo from "./AddTodo";
 import { Todo } from "@/types/todo";
 import TodoItem from "./TodoItem";
+import { TodoContext } from "@/contexts/TodoContext";
 
 export default function TodoList() {
-    const [todos, setTodos] = useState<Todo[]>([
-        { id: "100", text: "장보기", status: "active" },
-        { id: "101", text: "공부하기", status: "active" },
-    ]);
+    const context = useContext(TodoContext);
+    if (!context) return null;
+    const { todos, addTodo, updateTodo } = context;
+
     const handleAdd = (todo: Todo) => {
-        setTodos((prev) => [...prev, todo]);
-    };
-    const handleUpdate = (updated: Todo) => {
-        setTodos(todos.map((t) => (t.id === updated.id ? updated : t)));
+        addTodo(todo);
     };
 
     return (
@@ -27,7 +25,7 @@ export default function TodoList() {
                             <TodoItem
                                 key={item.id}
                                 todo={item}
-                                onUpdate={handleUpdate}
+                                onUpdate={updateTodo}
                             />
                         ))}
                 </ul>
@@ -41,7 +39,7 @@ export default function TodoList() {
                             <TodoItem
                                 key={item.id}
                                 todo={item}
-                                onUpdate={handleUpdate}
+                                onUpdate={updateTodo}
                             />
                         ))}
                 </ul>
