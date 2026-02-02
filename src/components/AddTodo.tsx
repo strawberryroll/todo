@@ -22,8 +22,11 @@ export default function AddTodo({ onAdd }: AddTodoProps) {
                 value={text}
                 placeholder="할 일을 입력해주세요"
                 onChange={handleChange}
+                className="w-4xl max-w-5xl h-10 bg-slate-100 border-2 border-slate-900 rounded-3xl pl-3 shadow-[2px_2px_0_theme(colors.slate.900)] mr-2.5 focus:outline-none"
             />
-            <button>추가하기</button>
+            <button className="w-32  h-10 bg-slate-200 border-2 border-slate-900 rounded-3xl shadow-[2px_2px_0_theme(colors.slate.900)]">
+                +추가하기
+            </button>
         </form>
     );
 }
