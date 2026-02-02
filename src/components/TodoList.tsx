@@ -5,9 +5,20 @@ import TodoItem from "./TodoItem";
 import { TodoContext } from "@/contexts/TodoContext";
 import Image from "next/image";
 
+/** 
+TodoList 컴포넌트
+- TodoContext를 통해 할 일 목록을 조회, 업데이트
+- 상태(active/done)에 따라 TO DO, DONE 섹션으로 구분
+*/
+
 export default function TodoList() {
+    // Todo 전역 상태 관리를 위해 Context 사용
     const context = useContext(TodoContext);
     if (!context) return null;
+
+    // todos: 할 일 목록
+    // addTodo: 할 일 추가
+    // updateTodo: 할 일 상태, 이미지, 메모 등 정보 업데이트
     const { todos, addTodo, updateTodo } = context;
 
     const handleAdd = (todo: Todo) => {
@@ -29,7 +40,7 @@ export default function TodoList() {
                         {todos.filter((todo) => todo.status === "active")
                             .length === 0 ? (
                             <div>
-                                {/* 태블릿, 데스크탑 */}
+                                {/* 태블릿, 데스크탑 empty 이미지 */}
                                 <Image
                                     src="/images/todo-large.svg"
                                     alt="empty todo"
@@ -37,7 +48,7 @@ export default function TodoList() {
                                     height={170}
                                     className="hidden md:block mx-auto mt-6"
                                 />
-                                {/* 모바일 */}
+                                {/* 모바일 empty 이미지*/}
                                 <Image
                                     src="/images/todo-small.svg"
                                     alt="empty todo"
@@ -75,7 +86,7 @@ export default function TodoList() {
                     {todos.filter((todo) => todo.status === "done").length ===
                     0 ? (
                         <div>
-                            {/* 태블릿, 데스크탑 */}
+                            {/* 태블릿, 데스크탑 empty 이미지 */}
                             <Image
                                 src="/images/done-large.svg"
                                 alt="empty done"
@@ -83,7 +94,7 @@ export default function TodoList() {
                                 height={170}
                                 className="hidden md:block mx-auto mt-6"
                             />
-                            {/* 모바일 */}
+                            {/* 모바일 empty 이미지*/}
                             <Image
                                 src="/images/done-small.svg"
                                 alt="empty done"

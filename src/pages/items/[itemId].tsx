@@ -29,7 +29,27 @@ export default function ItemDetailPage() {
     const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
         if (!file) return;
-        setImageUrl(URL.createObjectURL(file));
+
+        // 파일 크기 5MB 이하
+        const MAX_SIZE = 5 * 1024 * 1024;
+        if (file.size > MAX_SIZE) {
+            alert("5MB 이하만 업로드 할 수 있어요");
+            return;
+        }
+
+        // 파일 이름 영어로만
+        const fileName = /^[a-zA-Z0-9._-]+$/;
+        if (!fileName.test(file.name)) {
+            alert("파일 이름은 영어로만 이루어져야 해요 ");
+            return;
+        }
+
+        // Base64 변환
+        const reader = new FileReader();
+        reader.onloadend = () => {
+            setImageUrl(reader.result as string);
+        };
+        reader.readAsDataURL(file);
     };
 
     const handleUpdate = () => {

@@ -1,40 +1,100 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/pages/api-reference/create-next-app).
+# 📝 Todo List 프로젝트
 
-## Getting Started
+할 일을 관리할 수 있는 Todo List 웹 애플리케이션입니다.  
+할 일 추가, 완료 처리, 상세 수정 및 삭제 기능을 제공하며  
+모바일 / 태블릿 / 데스크탑 환경에 대응하는 반응형 웹으로 구현되었습니다.
 
-First, run the development server:
+---
+
+## 🔗 배포 주소
+
+> todo-app-two-lake-15.vercel.app
+
+---
+
+## ⚙️ 기술 스택
+
+- **Frontend**: Next.js (Page Router), React, TypeScript, JavaScript
+- **Styling**: Tailwind CSS
+- **State Management**: React Context API
+- **Storage**: LocalStorage
+
+---
+
+## 📌 주요 기능
+
+### 공통
+
+- 공용 컴포넌트 분리로 재사용성 강화
+- 반응형 웹 디자인 지원
+    - 모바일 / 태블릿 / 데스크탑 레이아웃
+
+---
+
+### 🏠 할 일 목록 페이지 (`/`)
+
+#### 목록 조회
+
+- 로고 클릭 시 메인 페이지(`/`)로 이동
+- 진행 중(TO DO) / 완료(DONE) 할 일 목록 분리 표시
+
+#### 할 일 추가
+
+- 상단 입력창에 할 일 입력 후
+    - `추가하기` 버튼 클릭 또는 `Enter` 입력 시 생성
+
+#### 할 일 완료 처리
+
+- 체크박스 클릭 시
+    - 진행 중 → 완료
+    - 완료 → 진행 중 상태로 변경
+
+---
+
+### 📄 할 일 상세 페이지 (`/items/{itemId}`)
+
+#### 할 일 수정
+
+- 할 일 항목 클릭 시 상세 페이지 이동
+- 다음 항목 수정 가능
+    - 할 일 이름
+    - 할 일 상태 (진행 / 완료)
+    - 메모
+    - 이미지 첨부
+- `수정 완료` 버튼 클릭 시 수정 사항 저장 후 목록 페이지로 이동
+
+#### 할 일 삭제
+
+- `삭제하기` 버튼 클릭 시 해당 할 일 삭제
+- 삭제 후 목록 페이지(`/`)로 이동
+
+---
+
+## 💾 데이터 관리
+
+- React Context API를 이용해 전역 상태 관리
+- LocalStorage에 할 일 데이터 저장
+
+---
+
+## 🧩 컴포넌트 구조
+
+- `AddTodo` : 할 일 추가 입력 컴포넌트
+- `TodoItem` : 할 일 단일 항목 컴포넌트
+- `TodoList` : 할 일 목록 페이지
+- `TodoContext` : 할 일 상태 전역 관리
+
+---
+
+## 📝 기타
+
+- 주요 컴포넌트 및 로직에 주석을 추가하여 가독성을 고려했습니다.
+
+---
+
+## 🚀 실행 방법
 
 ```bash
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
-
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
-
-You can start editing the page by modifying `pages/index.tsx`. The page auto-updates as you edit the file.
-
-[API routes](https://nextjs.org/docs/pages/building-your-application/routing/api-routes) can be accessed on [http://localhost:3000/api/hello](http://localhost:3000/api/hello). This endpoint can be edited in `pages/api/hello.ts`.
-
-The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/pages/building-your-application/routing/api-routes) instead of React pages.
-
-This project uses [`next/font`](https://nextjs.org/docs/pages/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn-pages-router) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/pages/building-your-application/deploying) for more details.
