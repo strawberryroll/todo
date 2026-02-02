@@ -118,7 +118,7 @@ export default function ItemDetailPage() {
                 <button
                     onClick={handleUpdate}
                     className={`w-32 h-10 text-xs border-2 border-slate-900 rounded-3xl shadow-[2px_2px_0_theme(colors.slate.900)] font-bold cursor-pointer
-                        ${imageUrl ? "bg-lime-300" : "bg-slate-100"}`}
+                        ${imageUrl || memo ? "bg-lime-300" : "bg-slate-100"}`}
                 >
                     ✓ 수정 완료
                 </button>
