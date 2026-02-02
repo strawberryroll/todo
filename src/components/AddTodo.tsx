@@ -16,16 +16,17 @@ export default function AddTodo({ onAdd }: AddTodoProps) {
     };
 
     return (
-        <form onSubmit={handleSubmit}>
+        <form onSubmit={handleSubmit} className="flex justify-center w-full">
             <input
                 type="text"
                 value={text}
                 placeholder="할 일을 입력해주세요"
                 onChange={handleChange}
-                className="w-4xl max-w-5xl h-10 bg-slate-100 border-2 border-slate-900 rounded-3xl pl-3 shadow-[2px_2px_0_theme(colors.slate.900)] mr-2.5 focus:outline-none"
+                className="w-3/5 h-10 bg-slate-100 border-2 border-slate-900 rounded-3xl pl-3 shadow-[2px_2px_0_theme(colors.slate.900)] mr-2.5 focus:outline-none"
             />
-            <button className="w-32  h-10 bg-slate-200 border-2 border-slate-900 rounded-3xl shadow-[2px_2px_0_theme(colors.slate.900)]">
-                +추가하기
+            <button className="w-12 sm:w-32 h-10 bg-slate-200 border-2 border-slate-900 rounded-3xl shadow-[2px_2px_0_theme(colors.slate.900)]">
+                <span className="hidden sm:inline">+추가하기</span>
+                <span className="inline sm:hidden text-2xl">+</span>
             </button>
         </form>
     );

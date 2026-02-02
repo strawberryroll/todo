@@ -14,10 +14,11 @@ export default function TodoList() {
     };
 
     return (
-        <>
+        <div className="w-full flex flex-col items-center p-4">
             <AddTodo onAdd={handleAdd} />
-            <div className="flex">
-                <section className="my-4 mx-1.5 w-96">
+
+            <div className="w-9/12 flex flex-col lg:flex-row justify-center gap-8">
+                <section className="mt-6 w-full lg:w-96">
                     <h1 className="w-fit bg-lime-300 rounded-3xl text-center text-green-700 px-6 py-1 font-bold">
                         TO DO
                     </h1>
@@ -34,7 +35,7 @@ export default function TodoList() {
                     </ul>
                 </section>
 
-                <section className="my-4 mx-1.5 w-96">
+                <section className="w-full lg:w-96 lg:mt-6">
                     <h1 className="w-fit bg-green-700 rounded-3xl text-center text-amber-300 px-6 py-1 font-bold">
                         DONE
                     </h1>
@@ -51,6 +52,6 @@ export default function TodoList() {
                     </ul>
                 </section>
             </div>
-        </>
+        </div>
     );
 }

@@ -21,9 +21,9 @@ export default function TodoItem({
 
     return (
         <li
-            className={`w-96 h-10 flex items-center gap-2 border-2 border-slate-900 rounded-3xl pl-3 my-2.5
+            className={`h-10 flex items-center gap-2 border-2 border-slate-900 rounded-3xl mt-2.5 mb-5
                 ${todo.status === "done" ? "bg-violet-100" : "bg-white"} 
-                ${isDetail ? "justify-center w-[700px] pl-0 py-6 font-bold underline" : ""}`}
+                ${isDetail ? "justify-center w-4/5 py-6 font-bold underline pl-0" : "w-full pl-3"}`}
         >
             <input
                 type="checkbox"
@@ -31,7 +31,7 @@ export default function TodoItem({
                 checked={todo.status === "done"}
                 onChange={handleChange}
                 className="w-5 h-5 appearance-none rounded-full bg-yellow-50 border-2 border-slate-900
-                checked:bg-violet-600 checked:border-violet-600 checked:bg-[url('/images/Vector64.png')] checked:bg-no-repeat checked:bg-center checked:bg-[length:12px_10px]
+                checked:bg-violet-600 checked:border-violet-600 checked:bg-[url('/images/check.png')] checked:bg-no-repeat checked:bg-center checked:bg-[length:12px_10px]
                 cursor-pointer"
             />
 

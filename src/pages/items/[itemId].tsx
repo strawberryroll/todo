@@ -50,10 +50,10 @@ export default function ItemDetailPage() {
         <div className="flex flex-col items-center bg-white w-3/5 min-h-[calc(100vh-64px)] mx-auto">
             <TodoItem todo={todo} onUpdate={updateTodo} variant="detail" />
 
-            <div className="flex w-4/5 gap-6">
+            <div className="flex flex-col lg:flex-row w-4/5 gap-6">
                 {/* 이미지 박스 */}
                 <div
-                    className={`relative flex justify-center items-center w-2/5 h-56 bg-slate-50  rounded-2xl 
+                    className={`relative flex justify-center items-center w-full lg:w-2/5 h-56 bg-slate-50  rounded-2xl 
                         ${imageUrl ? "border-2 border-transparent" : "border-2 border-dashed border-slate-300"}`}
                 >
                     {imageUrl ? (
@@ -99,7 +99,7 @@ export default function ItemDetailPage() {
 
                 {/* 메모 박스 */}
                 <div
-                    className="w-3/5 rounded-2xl px-6 py-4
+                    className="w-full lg:w-3/5 rounded-2xl px-6 py-4
                                 bg-[repeating-linear-gradient(to_bottom,theme(colors.yellow.50),theme(colors.yellow.50)_28px,theme(colors.amber.100)_30px)]"
                 >
                     <div className="text-center text-sm font-semibold text-amber-800 mb-3">
@@ -114,10 +114,11 @@ export default function ItemDetailPage() {
                 </div>
             </div>
 
-            <div className="w-4/5 flex justify-end gap-2 mt-4">
+            <div className="w-4/5 flex justify-center lg:justify-end gap-2 mt-4">
                 <button
                     onClick={handleUpdate}
-                    className="w-32 h-10 text-xs bg-slate-100 border-2 border-slate-900 rounded-3xl shadow-[2px_2px_0_theme(colors.slate.900)] font-bold cursor-pointer"
+                    className={`w-32 h-10 text-xs border-2 border-slate-900 rounded-3xl shadow-[2px_2px_0_theme(colors.slate.900)] font-bold cursor-pointer
+                        ${imageUrl ? "bg-lime-300" : "bg-slate-100"}`}
                 >
                     ✓ 수정 완료
                 </button>
