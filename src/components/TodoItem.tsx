@@ -25,18 +25,41 @@ export default function TodoItem({
     onUpdate,
     variant = "list",
 }: TodoItemProps) {
+    const [isEditing, setIsEditing] = React.useState(false); // 수정 모드
+    const [text, setText] = React.useState(todo.text); // 임시 텍스트
+
     // 체크박스 변경 시 상태 업데이트
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const status = e.target.checked ? "done" : "active";
         onUpdate({ ...todo, status: status });
     };
+
+    // 상세페이지에서 텍스트 클릭 시 수정 모드로 전환
+    const handleTextClick = (e: React.MouseEvent) => {
+        if (variant === "detail") {
+            e.preventDefault();
+            setIsEditing(true);
+        }
+    };
+
+    // 텍스트 변경 시 상태 업데이트
+    const handleTextChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setText(e.target.value);
+    };
+
+    // 입력 필드 포커스 해제 시 텍스트 반영
+    const handleTextBlur = () => {
+        onUpdate({ ...todo, text });
+        setIsEditing(false);
+    };
+
     // 상세 페이지 여부 판단
     const isDetail = variant === "detail";
 
     return (
         // 아이템 클릭 시 상세 페이지로 이동
         <Link
-            href={`/items/${todo.id}`}
+            href={variant === "detail" ? "#" : `/items/${todo.id}`}
             className="block w-full flex justify-center"
         >
             <li
@@ -55,16 +78,30 @@ export default function TodoItem({
                 checked:bg-violet-600 checked:border-violet-600 checked:bg-[url('/images/check.png')] checked:bg-no-repeat checked:bg-center checked:bg-[length:12px_10px]
                 cursor-pointer"
                 />
+
                 {/* 할 일 텍스트 */}
-                <span
-                    className={`transition-all duration-200 ${
-                        todo.status === "done" && !isDetail
-                            ? "line-through"
-                            : ""
-                    }`}
-                >
-                    {todo.text}
-                </span>
+                {/* 수정 중이면 input 아니면 span */}
+                {isEditing ? (
+                    <input
+                        type="text"
+                        value={text}
+                        onChange={handleTextChange}
+                        onBlur={handleTextBlur}
+                        autoFocus
+                        className="w-full text-sm outline-none"
+                    />
+                ) : (
+                    <span
+                        onClick={handleTextClick}
+                        className={`transition-all duration-200 ${
+                            todo.status === "done" && !isDetail
+                                ? "line-through"
+                                : ""
+                        }`}
+                    >
+                        {todo.text}
+                    </span>
+                )}
             </li>
         </Link>
     );

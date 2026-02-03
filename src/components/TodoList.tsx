@@ -36,7 +36,7 @@ export default function TodoList() {
                         TO DO
                     </h1>
                     {/* 할 일이 없을 때 & 있을 때 */}
-                    <div className="flex-1">
+                    <div className="min-h-[200px]">
                         {todos.filter((todo) => todo.status === "active")
                             .length === 0 ? (
                             <div>
