@@ -8,7 +8,7 @@
 
 ## 🔗 배포 주소
 
-> todo-app-two-lake-15.vercel.app
+> https://todo-gilt-nine-31.vercel.app/
 
 ---
 
