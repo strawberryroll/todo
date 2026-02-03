@@ -86,7 +86,7 @@ export default function ItemDetailPage() {
                     ) : (
                         // 이미지가 없을 때
                         <img
-                            src="/images/image-icon.png"
+                            src="/images/image-Icon.png"
                             alt="image icon"
                             className="w-10 h-10"
                         />
