@@ -1,7 +1,10 @@
 export interface Todo {
-    id: string;
-    text: string;
-    status: "active" | "done";
+    id: number;
+    tenantId: string;
+    name: string;
     memo?: string;
-    image?: string;
+    imageUrl?: string;
+    isCompleted: boolean;
 }
+
+export type CreateTodoRequest = Pick<Todo, "name">;

@@ -1,9 +1,12 @@
 import TodoItem from "@/components/TodoItem";
-import { TodoContext } from "@/contexts/TodoContext";
+import { TodoContext } from "@/lib/TodoContext";
 import { useRouter } from "next/router";
 import React, { useContext, useEffect, useState } from "react";
+import axios from "@/lib/axios";
+import { Todo } from "@/types/todo";
 
 export default function ItemDetailPage() {
+    const [todo, setTodo] = useState<Todo | null>(null);
     const [imageUrl, setImageUrl] = useState<string>("");
     const [memo, setMemo] = useState<string>("");
 
@@ -12,15 +15,27 @@ export default function ItemDetailPage() {
 
     const context = useContext(TodoContext);
     if (!context) return null;
-    const { todos, updateTodo, deleteTodo } = context;
+    const { updateTodo, deleteTodo } = context;
 
-    const todo = todos.find((todo) => todo.id === itemId);
+    // 항목 상세 조회 API 호출
+    const getTodo = async () => {
+        if (!itemId) return;
+        try {
+            const res = await axios.get(`/items/${itemId}`);
+            const newTodo: Todo = res.data;
+            setTodo(newTodo);
+            setImageUrl(newTodo.imageUrl ?? "");
+            setMemo(newTodo.memo ?? "");
+        } catch (error) {
+            console.error("데이터 로딩 실패: ", error);
+        }
+    };
 
     useEffect(() => {
-        if (!todo) return;
-        setImageUrl(todo.image ?? "");
-        setMemo(todo.memo ?? "");
-    }, [todo]);
+        if (itemId) {
+            getTodo();
+        }
+    }, [itemId]);
 
     if (!todo) {
         return <p>할 일을 찾을 수 없습니다</p>;
@@ -55,7 +70,7 @@ export default function ItemDetailPage() {
     const handleUpdate = () => {
         updateTodo({
             ...todo,
-            image: imageUrl,
+            imageUrl: imageUrl,
             memo: memo,
         });
         router.push("/");

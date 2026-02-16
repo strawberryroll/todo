@@ -1,4 +1,4 @@
-import { Todo } from "@/types/todo";
+import { CreateTodoRequest } from "@/types/todo";
 import React, { useState } from "react";
 
 /** 
@@ -6,7 +6,7 @@ AddTodo 컴포넌트 Props
 - onAdd: 새로운 할 일 추가 시 호출되는 함수
 */
 interface AddTodoProps {
-    onAdd: (todo: Todo) => void;
+    onAdd: (todo: CreateTodoRequest) => void;
 }
 
 /**
@@ -24,7 +24,8 @@ export default function AddTodo({ onAdd }: AddTodoProps) {
     // 폼 제출 시 새로운 Todo 상위로 전달
     const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-        onAdd({ id: Date.now().toString(), text, status: "active" });
+        if (!text.trim()) return; // 빈 값 방지
+        onAdd({ name: text });
         setText("");
     };
 

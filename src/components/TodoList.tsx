@@ -1,8 +1,8 @@
-import React, { useContext, useState } from "react";
+import React, { useContext } from "react";
 import AddTodo from "./AddTodo";
-import { Todo } from "@/types/todo";
+import { CreateTodoRequest } from "@/types/todo";
 import TodoItem from "./TodoItem";
-import { TodoContext } from "@/contexts/TodoContext";
+import { TodoContext } from "../lib/TodoContext";
 import Image from "next/image";
 
 /** 
@@ -14,14 +14,14 @@ TodoList 컴포넌트
 export default function TodoList() {
     // Todo 전역 상태 관리를 위해 Context 사용
     const context = useContext(TodoContext);
-    if (!context) return null;
+    if (!context) return <div>로딩 중...</div>;
 
     // todos: 할 일 목록
     // addTodo: 할 일 추가
     // updateTodo: 할 일 상태, 이미지, 메모 등 정보 업데이트
-    const { todos, addTodo, updateTodo } = context;
+    const { todos = [], addTodo, updateTodo } = context;
 
-    const handleAdd = (todo: Todo) => {
+    const handleAdd = (todo: CreateTodoRequest) => {
         addTodo(todo);
     };
 
@@ -37,7 +37,7 @@ export default function TodoList() {
                     </h1>
                     {/* 할 일이 없을 때 & 있을 때 */}
                     <div className="min-h-[200px]">
-                        {todos.filter((todo) => todo.status === "active")
+                        {todos.filter((todo) => todo.isCompleted === false)
                             .length === 0 ? (
                             <div>
                                 {/* 태블릿, 데스크탑 empty 이미지 */}
@@ -64,7 +64,9 @@ export default function TodoList() {
                         ) : (
                             <ul>
                                 {todos
-                                    .filter((todo) => todo.status === "active")
+                                    .filter(
+                                        (todo) => todo.isCompleted === false,
+                                    )
                                     .map((item) => (
                                         <TodoItem
                                             key={item.id}
@@ -83,8 +85,8 @@ export default function TodoList() {
                         DONE
                     </h1>
                     {/* 다 한 일이 없을 때 & 있을 때 */}
-                    {todos.filter((todo) => todo.status === "done").length ===
-                    0 ? (
+                    {todos.filter((todo) => todo.isCompleted === true)
+                        .length === 0 ? (
                         <div>
                             {/* 태블릿, 데스크탑 empty 이미지 */}
                             <Image
@@ -110,7 +112,7 @@ export default function TodoList() {
                     ) : (
                         <ul>
                             {todos
-                                .filter((todo) => todo.status === "done")
+                                .filter((todo) => todo.isCompleted === true)
                                 .map((item) => (
                                     <TodoItem
                                         key={item.id}

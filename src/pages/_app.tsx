@@ -1,4 +1,4 @@
-import { TodoProvider } from "@/contexts/TodoContext";
+import { TodoProvider } from "../lib/TodoContext";
 import "@/styles/globals.css";
 import type { AppProps } from "next/app";
 import Image from "next/image";

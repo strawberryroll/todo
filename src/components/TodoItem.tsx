@@ -26,12 +26,12 @@ export default function TodoItem({
     variant = "list",
 }: TodoItemProps) {
     const [isEditing, setIsEditing] = React.useState(false); // 수정 모드
-    const [text, setText] = React.useState(todo.text); // 임시 텍스트
+    const [text, setText] = React.useState(todo.name); // 임시 텍스트
 
     // 체크박스 변경 시 상태 업데이트
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const status = e.target.checked ? "done" : "active";
-        onUpdate({ ...todo, status: status });
+        const isCompleted = e.target.checked ? true : false;
+        onUpdate({ ...todo, isCompleted });
     };
 
     // 상세페이지에서 텍스트 클릭 시 수정 모드로 전환
@@ -49,7 +49,7 @@ export default function TodoItem({
 
     // 입력 필드 포커스 해제 시 텍스트 반영
     const handleTextBlur = () => {
-        onUpdate({ ...todo, text });
+        onUpdate({ ...todo, name: text });
         setIsEditing(false);
     };
 
@@ -64,14 +64,14 @@ export default function TodoItem({
         >
             <li
                 className={`h-10 flex items-center gap-2 border-2 border-slate-900 rounded-3xl my-3
-                ${todo.status === "done" ? "bg-violet-100" : "bg-white"} 
+                ${todo.isCompleted === true ? "bg-violet-100" : "bg-white"} 
                 ${isDetail ? "justify-center w-4/5 py-6 font-bold underline pl-3" : "w-full pl-3"}`}
             >
                 {/* 체크박스 */}
                 <input
                     type="checkbox"
                     id={`checkbox-${todo.id}`}
-                    checked={todo.status === "done"}
+                    checked={todo.isCompleted === true}
                     onChange={handleChange}
                     onClick={(e) => e.stopPropagation()}
                     className="w-5 h-5 appearance-none rounded-full bg-yellow-50 border-2 border-slate-900
@@ -94,12 +94,12 @@ export default function TodoItem({
                     <span
                         onClick={handleTextClick}
                         className={`transition-all duration-200 ${
-                            todo.status === "done" && !isDetail
+                            todo.isCompleted === true && !isDetail
                                 ? "line-through"
                                 : ""
                         }`}
                     >
-                        {todo.text}
+                        {todo.name}
                     </span>
                 )}
             </li>
