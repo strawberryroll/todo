@@ -7,9 +7,12 @@ import { Todo } from "@/types/todo";
 
 export default function ItemDetailPage() {
     const [todo, setTodo] = useState<Todo | null>(null);
+    const [file, setFile] = useState<File | null>(null);
     const [imageUrl, setImageUrl] = useState<string | null>(null);
     const [memo, setMemo] = useState<string | null>(null);
     const [loading, setLoading] = useState(true);
+    const [isUpdating, setIsUpdating] = useState(false);
+    const [isDeleting, setIsDeleting] = useState(false);
 
     const router = useRouter();
 
@@ -69,26 +72,56 @@ export default function ItemDetailPage() {
             return;
         }
 
-        // Base64 변환
+        // 미리보기용 Base64 변환
         const reader = new FileReader();
         reader.onloadend = () => {
-            setImageUrl(reader.result as string);
+            setImageUrl(reader.result as string); // 화면 미리보기용
         };
         reader.readAsDataURL(file);
+        setFile(file); // 실제 업로드용 파일 저장
     };
 
-    const handleUpdate = () => {
-        updateTodo({
-            ...todo,
-            imageUrl: imageUrl || null,
-            memo: memo || null,
-        });
-        router.push("/");
+    const handleUpdate = async () => {
+        try {
+            setIsUpdating(true);
+            let uploadedImageUrl = imageUrl;
+
+            if (file) {
+                const formData = new FormData();
+                formData.append("image", file);
+                const res = await axios.post("/images/upload", formData, {
+                    headers: { "Content-Type": "multipart/form-data" },
+                });
+                uploadedImageUrl = res.data.url;
+            }
+
+            updateTodo({
+                ...todo,
+                imageUrl: uploadedImageUrl || null,
+                memo: memo || null,
+            });
+            alert("수정이 완료됐어요!");
+            router.push("/");
+        } catch (error) {
+            console.error("수정 실패: ", error);
+            alert("수정에 실패했어요");
+        } finally {
+            setIsUpdating(false);
+        }
     };
 
     const handleDelete = () => {
-        deleteTodo(todo.id);
-        router.push("/");
+        try {
+            setIsDeleting(true);
+            deleteTodo(todo.id);
+            alert("삭제가 완료됐어요!");
+            router.push("/");
+        } catch (error) {
+            console.error("삭제 실패: ", error);
+            alert("삭제에 실패했어요");
+        } finally {
+            setIsDeleting(false);
+        }
     };
 
     return (
@@ -170,15 +203,17 @@ export default function ItemDetailPage() {
                 <button
                     onClick={handleUpdate}
                     className={`w-32 h-10 text-xs border-2 border-slate-900 rounded-3xl shadow-[2px_2px_0_theme(colors.slate.900)] font-bold cursor-pointer
-                        ${imageUrl || memo ? "bg-lime-300" : "bg-slate-100"}`}
+                        ${imageUrl || memo ? "bg-lime-300" : "bg-slate-100"}}
+                        ${isUpdating ? "opacity-50 cursor-not-allowed" : ""}`}
                 >
-                    ✓ 수정 완료
+                    {isUpdating ? "수정 중..." : "✓ 수정 완료"}
                 </button>
                 <button
                     onClick={handleDelete}
-                    className="w-32 h-10 bg-rose-500 text-white text-xs border-2 border-slate-900 rounded-3xl shadow-[2px_2px_0_theme(colors.slate.900)] font-bold cursor-pointer"
+                    className={`w-32 h-10 bg-rose-500 text-white text-xs border-2 border-slate-900 rounded-3xl shadow-[2px_2px_0_theme(colors.slate.900)] font-bold cursor-pointer 
+                        ${isDeleting ? "opacity-50 cursor-not-allowed" : ""}`}
                 >
-                    × 삭제하기
+                    {isDeleting ? "삭제 중..." : "× 삭제하기"}
                 </button>
             </div>
         </div>

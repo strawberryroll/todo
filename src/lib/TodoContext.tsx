@@ -13,6 +13,7 @@ TodoContext에서 제공할 값들의 타입 정의
 */
 interface TodoContextValue {
     todos: Todo[];
+    isLoading: boolean;
     addTodo: (newTodo: CreateTodoRequest) => void;
     updateTodo: (updated: Todo) => void;
     deleteTodo: (id: number) => void;
@@ -28,6 +29,7 @@ TodoProvider
 */
 export function TodoProvider({ children }: { children: React.ReactNode }) {
     const [todos, setTodos] = useState<Todo[]>([]);
+    const [isLoading, setIsLoading] = useState(true);
 
     // API 호출해서 todo 불러오기
     useEffect(() => {
@@ -39,6 +41,8 @@ export function TodoProvider({ children }: { children: React.ReactNode }) {
                 setTodos(newTodos);
             } catch (error) {
                 console.error("목록 불러오기 실패: ", error);
+            } finally {
+                setIsLoading(false); // 추가
             }
         };
         axiosTodos();
@@ -73,10 +77,9 @@ export function TodoProvider({ children }: { children: React.ReactNode }) {
             };
             if (updated.memo != null) body.memo = updated.memo;
             if (updated.imageUrl != null) body.imageUrl = updated.imageUrl;
-            console.log("서버로 보낸 데이터: ", body);
             const res = await axios.patch(`/items/${updated.id}`, body); // 서버에서 업데이트
             const newTodo = res.data;
-            console.log("서버에서 받은 데이터: ", res.data);
+
             setTodos((prev) =>
                 prev.map((t) => (t.id === newTodo.id ? newTodo : t)),
             );
@@ -99,7 +102,7 @@ export function TodoProvider({ children }: { children: React.ReactNode }) {
 
     return (
         <TodoContext.Provider
-            value={{ todos, addTodo, updateTodo, deleteTodo }}
+            value={{ todos, isLoading, addTodo, updateTodo, deleteTodo }}
         >
             {children}
         </TodoContext.Provider>
