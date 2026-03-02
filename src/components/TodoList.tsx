@@ -19,7 +19,7 @@ export default function TodoList() {
     // todos: 할 일 목록
     // addTodo: 할 일 추가
     // updateTodo: 할 일 상태, 이미지, 메모 등 정보 업데이트
-    const { todos = [], addTodo, updateTodo } = context;
+    const { todos, addTodo, updateTodo } = context;
 
     const handleAdd = (todo: CreateTodoRequest) => {
         addTodo(todo);

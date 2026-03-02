@@ -1,6 +1,6 @@
 import { Todo } from "@/types/todo";
-import Link from "next/link";
-import React from "react";
+import { useRouter } from "next/router";
+import React, { useState, useEffect } from "react";
 
 /** 
 TodoItem 컴포넌트 Props
@@ -25,8 +25,13 @@ export default function TodoItem({
     onUpdate,
     variant = "list",
 }: TodoItemProps) {
-    const [isEditing, setIsEditing] = React.useState(false); // 수정 모드
-    const [text, setText] = React.useState(todo.name); // 임시 텍스트
+    const router = useRouter();
+    const [isEditing, setIsEditing] = useState(false); // 수정 모드
+    const [text, setText] = useState(todo.name); // 임시 텍스트
+
+    useEffect(() => {
+        setText(todo.name);
+    }, [todo.name]);
 
     // 체크박스 변경 시 상태 업데이트
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -49,7 +54,11 @@ export default function TodoItem({
 
     // 입력 필드 포커스 해제 시 텍스트 반영
     const handleTextBlur = () => {
-        onUpdate({ ...todo, name: text });
+        const updated = {
+            ...todo,
+            name: text,
+        };
+        onUpdate(updated);
         setIsEditing(false);
     };
 
@@ -58,51 +67,52 @@ export default function TodoItem({
 
     return (
         // 아이템 클릭 시 상세 페이지로 이동
-        <Link
-            href={variant === "detail" ? "#" : `/items/${todo.id}`}
-            className="block w-full flex justify-center"
-        >
-            <li
-                className={`h-10 flex items-center gap-2 border-2 border-slate-900 rounded-3xl my-3
+
+        <li
+            onClick={
+                variant === "list"
+                    ? () => router.push(`/items/${todo.id}`)
+                    : undefined
+            }
+            className={`h-10 flex items-center gap-2 border-2 border-slate-900 rounded-3xl my-3
                 ${todo.isCompleted === true ? "bg-violet-100" : "bg-white"} 
                 ${isDetail ? "justify-center w-4/5 py-6 font-bold underline pl-3" : "w-full pl-3"}`}
-            >
-                {/* 체크박스 */}
-                <input
-                    type="checkbox"
-                    id={`checkbox-${todo.id}`}
-                    checked={todo.isCompleted === true}
-                    onChange={handleChange}
-                    onClick={(e) => e.stopPropagation()}
-                    className="w-5 h-5 appearance-none rounded-full bg-yellow-50 border-2 border-slate-900
+        >
+            {/* 체크박스 */}
+            <input
+                type="checkbox"
+                id={`checkbox-${todo.id}`}
+                checked={todo.isCompleted === true}
+                onChange={handleChange}
+                onClick={(e) => e.stopPropagation()}
+                className="w-5 h-5 appearance-none rounded-full bg-yellow-50 border-2 border-slate-900
                 checked:bg-violet-600 checked:border-violet-600 checked:bg-[url('/images/check.png')] checked:bg-no-repeat checked:bg-center checked:bg-[length:12px_10px]
                 cursor-pointer"
-                />
+            />
 
-                {/* 할 일 텍스트 */}
-                {/* 수정 중이면 input 아니면 span */}
-                {isEditing ? (
-                    <input
-                        type="text"
-                        value={text}
-                        onChange={handleTextChange}
-                        onBlur={handleTextBlur}
-                        autoFocus
-                        className="w-full text-sm outline-none"
-                    />
-                ) : (
-                    <span
-                        onClick={handleTextClick}
-                        className={`transition-all duration-200 ${
-                            todo.isCompleted === true && !isDetail
-                                ? "line-through"
-                                : ""
-                        }`}
-                    >
-                        {todo.name}
-                    </span>
-                )}
-            </li>
-        </Link>
+            {/* 할 일 텍스트 */}
+            {/* 수정 중이면 input 아니면 span */}
+            {isEditing ? (
+                <input
+                    type="text"
+                    value={text}
+                    onChange={handleTextChange}
+                    onBlur={handleTextBlur}
+                    autoFocus
+                    className="w-full text-sm outline-none"
+                />
+            ) : (
+                <span
+                    onClick={handleTextClick}
+                    className={`transition-all duration-200 ${
+                        todo.isCompleted === true && !isDetail
+                            ? "line-through"
+                            : ""
+                    }`}
+                >
+                    {todo.name}
+                </span>
+            )}
+        </li>
     );
 }

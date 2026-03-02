@@ -67,8 +67,16 @@ export function TodoProvider({ children }: { children: React.ReactNode }) {
     // 할 일 업데이트 - Todo 객체 전체를 갱신
     const updateTodo = async (updated: Todo) => {
         try {
-            const res = await axios.patch(`/items/${updated.id}`, updated); // 서버에서 업데이트
+            const body: Record<string, unknown> = {
+                name: updated.name,
+                isCompleted: updated.isCompleted,
+            };
+            if (updated.memo != null) body.memo = updated.memo;
+            if (updated.imageUrl != null) body.imageUrl = updated.imageUrl;
+            console.log("서버로 보낸 데이터: ", body);
+            const res = await axios.patch(`/items/${updated.id}`, body); // 서버에서 업데이트
             const newTodo = res.data;
+            console.log("서버에서 받은 데이터: ", res.data);
             setTodos((prev) =>
                 prev.map((t) => (t.id === newTodo.id ? newTodo : t)),
             );

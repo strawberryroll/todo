@@ -7,35 +7,45 @@ import { Todo } from "@/types/todo";
 
 export default function ItemDetailPage() {
     const [todo, setTodo] = useState<Todo | null>(null);
-    const [imageUrl, setImageUrl] = useState<string>("");
-    const [memo, setMemo] = useState<string>("");
+    const [imageUrl, setImageUrl] = useState<string | null>(null);
+    const [memo, setMemo] = useState<string | null>(null);
+    const [loading, setLoading] = useState(true);
 
     const router = useRouter();
-    const { itemId } = router.query;
 
     const context = useContext(TodoContext);
     if (!context) return null;
     const { updateTodo, deleteTodo } = context;
 
     // 항목 상세 조회 API 호출
-    const getTodo = async () => {
-        if (!itemId) return;
+    const getTodo = async (id: string) => {
         try {
-            const res = await axios.get(`/items/${itemId}`);
+            const res = await axios.get(`/items/${id}`);
             const newTodo: Todo = res.data;
             setTodo(newTodo);
-            setImageUrl(newTodo.imageUrl ?? "");
-            setMemo(newTodo.memo ?? "");
+            setImageUrl(newTodo.imageUrl ?? null);
+            setMemo(newTodo.memo ?? null);
         } catch (error) {
             console.error("데이터 로딩 실패: ", error);
+        } finally {
+            setLoading(false);
         }
     };
 
     useEffect(() => {
-        if (itemId) {
-            getTodo();
+        const { itemId } = router.query;
+
+        if (typeof itemId === "string") {
+            getTodo(itemId);
+        } else {
+            // 쿼리 파라미터가 없거나 잘못된 경우 로딩 중단
+            setLoading(false);
         }
-    }, [itemId]);
+    }, [router.query.itemId]);
+
+    if (loading) {
+        return <p>로딩중...</p>;
+    }
 
     if (!todo) {
         return <p>할 일을 찾을 수 없습니다</p>;
@@ -70,8 +80,8 @@ export default function ItemDetailPage() {
     const handleUpdate = () => {
         updateTodo({
             ...todo,
-            imageUrl: imageUrl,
-            memo: memo,
+            imageUrl: imageUrl || null,
+            memo: memo || null,
         });
         router.push("/");
     };
@@ -83,7 +93,14 @@ export default function ItemDetailPage() {
 
     return (
         <div className="flex flex-col items-center bg-white w-3/5 min-h-[calc(100vh-64px)] mx-auto">
-            <TodoItem todo={todo} onUpdate={updateTodo} variant="detail" />
+            <TodoItem
+                todo={todo}
+                onUpdate={(updated) => {
+                    setTodo(updated);
+                    updateTodo(updated);
+                }}
+                variant="detail"
+            />
 
             <div className="flex flex-col lg:flex-row w-4/5 gap-6">
                 {/* 이미지 박스 */}
