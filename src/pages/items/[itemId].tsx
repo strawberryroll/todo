@@ -159,7 +159,7 @@ export default function ItemDetailPage() {
                     </div>
                     <textarea
                         id="memo"
-                        value={memo}
+                        value={memo ?? ""}
                         onChange={(e) => setMemo(e.target.value)}
                         className="w-full h-36 text-sm resize-none bg-transparent outline-none leading-7"
                     ></textarea>
