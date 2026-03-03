@@ -1,8 +1,9 @@
 "use client";
 
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { CreateTodoRequest, Todo } from "@/types/todo";
 import axios from "./axios";
-import { createContext, useEffect, useState } from "react";
+import { createContext } from "react";
 
 /** 
 TodoContext에서 제공할 값들의 타입 정의
@@ -27,73 +28,82 @@ TodoProvider
 - Todo 전역 상태 관리
 - 로컬 스토리지와 연동하여 새로고침 후에도 데이터 유지
 */
+
 export function TodoProvider({ children }: { children: React.ReactNode }) {
-    const [todos, setTodos] = useState<Todo[]>([]);
-    const [isLoading, setIsLoading] = useState(true);
+    const queryClient = useQueryClient();
 
-    // API 호출해서 todo 불러오기
-    useEffect(() => {
-        const axiosTodos = async () => {
-            try {
-                const res = await axios.get(`/items`); // 항목 목록 조회
-                const newTodos = res.data;
+    // 1) 목록 조회
+    const { isLoading, data } = useQuery({
+        queryKey: ["todos"],
+        queryFn: async () => {
+            const res = await axios.get("/items");
+            return res.data;
+        },
+        staleTime: 1000 * 60,
+    });
 
-                setTodos(newTodos);
-            } catch (error) {
-                console.error("목록 불러오기 실패: ", error);
-            } finally {
-                setIsLoading(false); // 추가
-            }
-        };
-        axiosTodos();
-    }, []);
+    // 2) 추가
+    const addMutation = useMutation({
+        mutationFn: async (todo: CreateTodoRequest) => {
+            const res = await axios.post("/items", { name: todo.name });
+            return res.data;
+        },
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ["todos"] });
+        },
+    });
 
-    // 할 일 추가
-    const addTodo = async (todo: CreateTodoRequest) => {
-        try {
-            // 서버에 데이터 전송 (name만 보냄)
-            const res = await axios.post("/items", {
-                // 항목 등록 API
-                name: todo.name,
-            });
-
-            // 서버에서 생성된 전체 객체 받아오기
-            const newTodo = res.data;
-
-            // 클라이언트 상태 업데이트
-            setTodos((prev) => [...prev, newTodo]);
-        } catch (error) {
-            console.error("항목 등록 실패: ", error);
-            alert("할 일을 추가하지 못했어요");
-        }
-    };
-
-    // 할 일 업데이트 - Todo 객체 전체를 갱신
-    const updateTodo = async (updated: Todo) => {
-        try {
+    // 3) 수정
+    const updateMutation = useMutation({
+        mutationFn: async (updated: Todo) => {
             const body: Record<string, unknown> = {
                 name: updated.name,
                 isCompleted: updated.isCompleted,
             };
             if (updated.memo != null) body.memo = updated.memo;
             if (updated.imageUrl != null) body.imageUrl = updated.imageUrl;
-            const res = await axios.patch(`/items/${updated.id}`, body); // 서버에서 업데이트
-            const newTodo = res.data;
 
-            setTodos((prev) =>
-                prev.map((t) => (t.id === newTodo.id ? newTodo : t)),
-            );
+            const res = await axios.patch(`/items/${updated.id}`, body);
+            return res.data;
+        },
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ["todos"] });
+        },
+    });
+
+    // 4) 삭제
+    const deleteMutation = useMutation({
+        mutationFn: async (id: number) => {
+            await axios.delete(`/items/${id}`);
+        },
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ["todos"] });
+        },
+    });
+
+    const todos = data ?? [];
+
+    const addTodo = async (todo: CreateTodoRequest) => {
+        try {
+            await addMutation.mutateAsync(todo);
+        } catch (error) {
+            console.error("항목 등록 실패: ", error);
+            alert("할 일을 추가하지 못했어요");
+        }
+    };
+
+    const updateTodo = async (updated: Todo) => {
+        try {
+            await updateMutation.mutateAsync(updated);
         } catch (error) {
             console.error("수정 실패: ", error);
             alert("세부 사항을 수정하지 못했어요");
         }
     };
 
-    // 할 일 삭제
     const deleteTodo = async (id: number) => {
         try {
-            await axios.delete(`/items/${id}`); // 서버에서 삭제
-            setTodos((prev) => prev.filter((todo) => todo.id !== id)); // 로컬 상태 동기화
+            await deleteMutation.mutateAsync(id);
         } catch (error) {
             console.error("삭제 실패: ", error);
             alert("할 일을 삭제하지 못했어요");

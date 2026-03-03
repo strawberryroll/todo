@@ -1,8 +1,21 @@
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { TodoProvider } from "../lib/TodoContext";
 import "@/styles/globals.css";
 import type { AppProps } from "next/app";
 import Image from "next/image";
 import Link from "next/link";
+
+const queryClient = new QueryClient();
+
+declare global {
+    interface Window {
+        __TANSTACK_QUERY_CLIENT__: import("@tanstack/query-core").QueryClient;
+    }
+}
+
+if (typeof window !== "undefined") {
+    window.__TANSTACK_QUERY_CLIENT__ = queryClient;
+}
 
 export default function App({ Component, pageProps }: AppProps) {
     return (
@@ -30,9 +43,11 @@ export default function App({ Component, pageProps }: AppProps) {
                 </Link>
             </header>
 
-            <TodoProvider>
-                <Component {...pageProps} />
-            </TodoProvider>
+            <QueryClientProvider client={queryClient}>
+                <TodoProvider>
+                    <Component {...pageProps} />
+                </TodoProvider>
+            </QueryClientProvider>
         </>
     );
 }
