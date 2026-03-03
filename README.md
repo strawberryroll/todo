@@ -14,10 +14,10 @@
 
 ## ⚙️ 기술 스택
 
-- **Frontend**: Next.js (Page Router), React, TypeScript, JavaScript
+- **Frontend**: Next.js (Page Router), React, TypeScript
 - **Styling**: Tailwind CSS
-- **State Management**: React Context API
-- **Storage**: LocalStorage
+- **State Management**: React Context API, React Query (TanStack Query)
+- **API**: REST API (Axios)
 
 ---
 
